@@ -1,5 +1,5 @@
 {
-  "name": "wk-html-to-pdf",
+  "name": "ai-html-to-pdf",
   "version": "0.0.1",
   "description": "将html转化成pdf，不会对文本图片等内容进行截断。",
   "type": "module",

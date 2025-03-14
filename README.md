@@ -6,16 +6,16 @@
 
 ```bash
 # 使用npm
-npm i -S wk-html-to-pdf
+npm i -S ai-html-to-pdf
 # 使用yarn
-yarn add wk-html-to-pdf
+yarn add ai-html-to-pdf
 ```
 
 ### 用法
 
 ```ts
 // ...
-import htmlToPdf from "wx-html-to-pdf";
+import htmlToPdf from "ai-html-to-pdf";
 
 async function exportPDF() {
   Loading.show();
