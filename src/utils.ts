@@ -6,6 +6,8 @@ export interface AdaptiveOptions {
   parentElement?: HTMLElement;
   // 克隆容器无法克隆canvas视图，需要对克隆内容进行重新渲染
   resetView?: (element: Element) => void;
+  // 图表绘制时间延迟
+  resetViewDelay?: number;
 }
 
 // 导出PDF参数
@@ -13,7 +15,7 @@ export interface PdfOptions {
   // 文件名
   name?: string;
   // 整体块的class名称，生成pdf时作为整体处理，不会被分页切割
-  monoblockClassName?: string;
+  monoblockClassName?: string | string[];
   // 放大倍数，默认2倍，使导出的pdf更加清晰
   scale?: number;
   // PDF 页面边距，只能设置大于等于0数字，默认 10(px)
@@ -23,6 +25,8 @@ export interface PdfOptions {
   // 忽略的元素，不作页面内容计算，通常一些UI组件库会有特殊标签，但非计算内容，会影响截断内容判断，
   // 例：arco-design vue 组件库中，table表格，会生成 colgroup 标签，影响分页逻辑，需要过滤内容
   ignoreElement?: (element: Element) => Element[];
+  // 需要重置样式的标签，默认h1-h6 (目前只遇到margin样式的问题)
+  resetStyleTags?: string[];
   // 页眉文案
   header?: string;
   // 表头对齐方式
@@ -83,6 +87,21 @@ export async function waitForImagesLoaded(element: Element) {
   // 等待所有图片加载完成
   return Promise.all(imagePromises);
 }
+// 重置基础样式，因为html2canvas组件在导出图片时，会增加一些默认样式，故需要提前设置
+export async function resetBaseStyle(element: Element, tags: string[]) {
+  let list: Element[] = [];
+  tags.forEach((tag) => {
+    const elements = element.querySelectorAll(tag);
+    list = list.concat(Array.from(elements));
+  });
+  list.forEach((el) => {
+    const style = window.getComputedStyle(el);
+    const { marginTop, marginBottom, marginLeft, marginRight } = style;
+    (el as HTMLElement).style.margin = `${marginTop || 0} ${marginRight || 0} ${
+      marginBottom || 0
+    } ${marginLeft || 0}`;
+  });
+}
 // 获取行高
 export function getLineHeight(style: CSSStyleDeclaration) {
   if (style.lineHeight === "normal") {
@@ -103,9 +122,10 @@ export function createPdfWrap(element: Node | Element, width: number) {
   pdfEl.style.position = "absolute";
   pdfEl.style.left = "0";
   pdfEl.style.top = "0";
+  pdfEl.style.zIndex = "-99";
   pdfEl.style.left = "-99999px";
   pdfEl.style.top = "-99999px";
-  pdfEl.style.padding = "0";
+  pdfEl.style.opacity = "0";
   return pdfEl;
 }
 
@@ -126,7 +146,6 @@ export function drawPdfSinglePage(
     partCtx.font = Math.floor(cRatio * 8) + "px 微软雅黑"; // 设置字体大小和类型
     partCtx.fillStyle = "#999"; // 设置填充颜色
     partCtx.textBaseline = "top";
-    console.log("[ 字体大小 ]", Math.floor(cRatio * 8));
     if (options.header) {
       const headerAlign = options.headerAlign || "left";
       partCtx.textAlign = headerAlign;
@@ -197,6 +216,12 @@ export function getPageMargin(margin?: number | number[]): PageMargin {
   return pageMargin;
 }
 
-function getLegalMargin(margin: unknown): margin is Number {
+function getLegalMargin(margin: unknown): margin is number {
   return isNumber(margin) && margin >= 0;
+}
+
+export function delay(long: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, long);
+  });
 }

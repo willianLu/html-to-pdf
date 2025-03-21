@@ -10,6 +10,8 @@ import {
   getLineHeight,
   getPageMargin,
   isNumber,
+  resetBaseStyle,
+  delay,
 } from "./utils";
 export { type PdfOptions, type AdaptiveOptions };
 
@@ -35,8 +37,16 @@ export default async function htmlToPdf(
       // 在处理canvas视图时，克隆的节点无法显示，需要重新渲染
       if (adaptiveOptions.resetView) {
         adaptiveOptions.resetView(clonedElement);
+        // 图表重绘是需要时间的，所以加了延迟，防止图表绘制不全
+        // 如果发现依然绘制不全，自行加时间处理
+        await delay(adaptiveOptions.resetViewDelay || 1000);
       }
     }
+    const resetStyleTags = new Set(
+      ["h1", "h2", "h3", "h4", "h5", "h6"].concat(options.resetStyleTags || [])
+    );
+    // 去除部分标签 - h1 - h6，默认的margin样式
+    resetBaseStyle(clonedElement, Array.from(resetStyleTags));
     // 等待图片加载完成
     await waitForImagesLoaded(clonedElement);
     // 获取内容盒子距离视扣的相对位置信息，用于后续计算
@@ -60,8 +70,14 @@ export default async function htmlToPdf(
     // dpr 放大倍数
     const dpr = options.scale;
     // 标记元素为一个块状整体的className
-    const monoblockClassName =
-      options.monoblockClassName || "html-pdf-monoblock";
+    let monoblockClassName: string[] = ["html-pdf-monoblock"];
+    if (options.monoblockClassName) {
+      if (!Array.isArray(options.monoblockClassName)) {
+        monoblockClassName = [options.monoblockClassName];
+      } else {
+        monoblockClassName = options.monoblockClassName;
+      }
+    }
     // 初始化jsPDF
     const pdfPage = new JsPDF({
       orientation: "portrait",
@@ -78,6 +94,7 @@ export default async function htmlToPdf(
       scale: dpr,
       logging: false,
       useCORS: true,
+      width: wrapRect.width,
     });
     // 计算图像高度（px）
     const imgWidth = pageWidth - margin.left - margin.right;
@@ -121,7 +138,7 @@ export default async function htmlToPdf(
         const top = wTop - distance;
         pageLong += top;
         // 计算中的页面高度超出 PDF 单页高度，则记录该节点位置
-        if (pageLong > pdfPageContentHeight) {
+        if (pageLong !== top && pageLong > pdfPageContentHeight) {
           pages.push(distance);
           pageLong -= pdfPageContentHeight;
           distance = wTop - pageLong;
@@ -135,7 +152,9 @@ export default async function htmlToPdf(
             tagName === "img" ||
             tagName === "svg" ||
             tagName === "canvas" ||
-            el.classList.contains(monoblockClassName)
+            monoblockClassName.some((className) =>
+              el.classList.contains(className)
+            )
           ) {
             // 两种情况，1: tr 内容不超出单页；2: tr 内容超出单页
             if (elHeight > pdfPageContentHeight) {
@@ -159,11 +178,9 @@ export default async function htmlToPdf(
             // 存在子节点，深度处理子节点，找到更细粒度子节点
             if (options.ignoreElement) {
               const children = options.ignoreElement(el);
-              if (Array.isArray(children)) {
-                elArr = [...children, ...elArr];
-              }
+              elArr = children.concat(elArr);
             } else {
-              elArr = [...Array.from(el.children), ...elArr];
+              elArr = Array.from(el.children).concat(elArr);
             }
           } else {
             const style = window.getComputedStyle(el);
@@ -204,6 +221,7 @@ export default async function htmlToPdf(
     pdfPage.save(fileName);
   } catch (error) {
     console.error("PDF导出错误:", error);
+    throw error;
   } finally {
     if (pdfWrap) {
       parentElement.removeChild(pdfWrap);
