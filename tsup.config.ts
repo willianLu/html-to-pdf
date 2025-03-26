@@ -8,6 +8,6 @@ export default defineConfig({
   splitting: false,
   clean: true,
   esbuildOptions(options) {
-    // options.drop = ["console", "debugger"];
+    options.drop = ["console", "debugger"];
   },
 });

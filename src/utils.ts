@@ -1,3 +1,6 @@
+import { type jsPDFOptions } from "jspdf";
+import { type Options as Html2canvasOptions } from "html2canvas";
+
 // 克隆当前元素的内容，放到特定宽度的容易内，以此容易生成特定宽度比的PDF
 export interface AdaptiveOptions {
   // 设置生成PDF的宽度，默认800px
@@ -38,6 +41,8 @@ export interface PdfOptions {
   // 开启PDF宽度自适应模式, 默认 true
   adaptive?: boolean;
   adaptiveOptions?: AdaptiveOptions;
+  jsPDFOptions?: jsPDFOptions;
+  html2CanvasOptions?: Partial<Html2canvasOptions>;
 }
 export interface PageMargin {
   left: number;

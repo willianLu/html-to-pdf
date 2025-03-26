@@ -53,6 +53,8 @@ function exportPDF() {
 | footerAlign        | 'center' \| 'left' \| 'right'   | 'right'                  | 页脚对齐方式                                                                   |
 | adaptive           | boolean                         | true                     | 是否开启自适应，开启自适应会根据设置宽度导出 PDF                               |
 | adaptiveOptions    | AdaptiveOptions                 | 否                       | --                                                                             | 自适应导出 PDF 配置                          |
+| jsPDFOptions       | jsPDFOptions                    | 否                       | { unit: "px", format: "a4" }                                                   | jsPDF 插件配置                               |
+| html2CanvasOptions | html2CanvasOptions              | 否                       | { scale: PdfOptions.scale ,logging: false,useCORS: true,width: element.width}  | html2canvas 插件配置                         |
 
 ### AdaptiveOptions
 

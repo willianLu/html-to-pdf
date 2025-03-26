@@ -78,23 +78,22 @@ export default async function htmlToPdf(
         monoblockClassName = options.monoblockClassName;
       }
     }
+    const jsPDFOptions = options.jsPDFOptions || {};
     // 初始化jsPDF
-    const pdfPage = new JsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: "a4",
-    });
+    const pdfPage = new JsPDF({ unit: "px", format: "a4", ...jsPDFOptions });
     // 定义A4页面尺寸（px）
     const pageWidth = pdfPage.internal.pageSize.getWidth();
     const pageHeight = pdfPage.internal.pageSize.getHeight();
     // PDF 去除预留边界，单一页面的真实高度
     const realPageHeight = pageHeight - margin.top - margin.bottom;
+    const html2CanvasOptions = options.html2CanvasOptions || {};
     // 使用html2canvas捕获元素
     const canvas = await html2canvas(clonedElement, {
       scale: dpr,
       logging: false,
       useCORS: true,
       width: wrapRect.width,
+      ...html2CanvasOptions,
     });
     // 计算图像高度（px）
     const imgWidth = pageWidth - margin.left - margin.right;
