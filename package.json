@@ -1,6 +1,6 @@
 {
-  "name": "ai-html-to-pdf",
-  "version": "0.2.0",
+  "name": "@wk-tools/html-to-pdf",
+  "version": "0.1.0",
   "description": "将html转化成pdf，不会对文本图片等内容进行截断。",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -37,6 +37,9 @@
     "name": "willianLu",
     "email": "1013658157@qq.com",
     "url": "https://github.com/willianLu"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "MIT",
   "bugs": {

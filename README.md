@@ -1,4 +1,4 @@
-# ai-html-to-pdf
+# html-to-pdf 使用说明
 
 本库致力于 html 在线导出为 pdf，实现智能分页效果，不会切断文本图片表格等内容，可兼容手机端。本库依赖 html2canvas 和 jspdf，使用 canvas 绘图，请保证使用浏览器对以上库是支持的。
 
@@ -6,16 +6,16 @@
 
 ```bash
 # 使用npm
-npm i -S ai-html-to-pdf
+npm i -S @wk-tools/html-to-pdf
 # 使用yarn
-yarn add ai-html-to-pdf
+yarn add @wk-tools/html-to-pdf
 ```
 
 ### 用法
 
 ```ts
 // ...
-import htmlToPdf from "ai-html-to-pdf";
+import htmlToPdf from "@wk-tools/html-to-pdf";
 
 function exportPDF() {
   Loading.show();
