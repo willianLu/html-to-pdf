@@ -2,6 +2,8 @@
 
 本库致力于 html 在线导出为 pdf，实现智能分页效果，不会切断文本图片表格等内容，可兼容手机端。本库依赖 html2canvas 和 jspdf，使用 canvas 绘图，请保证使用浏览器对以上库是支持的。
 
+[html-to-pdf 示例](https://willianlu.github.io/html-pdf-docs/#/demo)
+
 ### 安装
 
 ```bash
