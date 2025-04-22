@@ -65,21 +65,21 @@ function exportPDF() {
 
 ### PdfOptions
 
-| 参数               | 类型                            | 必填项                   | 默认                                                                           | 说明                                         |
-| ------------------ | ------------------------------- | ------------------------ | ------------------------------------------------------------------------------ | -------------------------------------------- |
-| name               | string                          | 否                       | --                                                                             | 导出文件名称                                 |
-| monoblockClassName | string \| string[]              | 否                       | 'html-pdf-monoblock'                                                           | 分页处理时，将元素内容当作一个整体           |
-| backgroundColor    | string                          | 否                       | #fff                                                                           | PDF 背景颜色                                 |
-| scale              | number                          | 否                       | 2                                                                              | 导出内容放大倍数，增加内容清晰度，必须大于 0 |
-| margin             | number \| number[]              | 否                       | 10                                                                             | PDF 内容边距                                 |
-| ignoreElement      | (element: Element) => Element[] | 否 ｜ 分页计算忽略的元素 |
-| resetStyleTags     | string[]                        | 否                       | 需要重置样式的标签，目前只发现 h1-h6 标签在 html2canvas 中默认增加了 margin 值 |
-| header             | HeaderOrFooterOptions           | 否                       | --                                                                             | 页眉参数                                     |
-| footer             | HeaderOrFooterOptions           | 否                       | --                                                                             | 页脚参数                                     |
-| adaptive           | boolean                         | true                     | 是否开启自适应，开启自适应会根据设置宽度导出 PDF                               |
-| adaptiveOptions    | AdaptiveOptions                 | 否                       | --                                                                             | 自适应导出 PDF 配置                          |
-| jsPDFOptions       | jsPDFOptions                    | 否                       | { unit: "px", format: "a4" }                                                   | jsPDF 插件配置，单位仅支持 px                |
-| html2CanvasOptions | html2CanvasOptions              | 否                       | { scale: PdfOptions.scale ,logging: false,useCORS: true,width: element.width}  | html2canvas 插件配置                         |
+| 参数               | 类型                            | 必填项 | 默认                                                                          | 说明                                                                           |
+| ------------------ | ------------------------------- | ------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| name               | string                          | 否     | --                                                                            | 导出文件名称                                                                   |
+| monoblockClassName | string \| string[]              | 否     | 'html-pdf-monoblock'                                                          | 分页处理时，将元素内容当作一个整体                                             |
+| backgroundColor    | string                          | 否     | #fff                                                                          | PDF 背景颜色                                                                   |
+| scale              | number                          | 否     | 2                                                                             | 导出内容放大倍数，增加内容清晰度，必须大于 0                                   |
+| margin             | number \| number[]              | 否     | 10                                                                            | PDF 内容边距                                                                   |
+| ignoreElement      | (element: Element) => Element[] | 否     | --                                                                            | 分页计算忽略的元素                                                             |
+| resetStyleTags     | string[]                        | 否     | --                                                                            | 需要重置样式的标签，目前只发现 h1-h6 标签在 html2canvas 中默认增加了 margin 值 |
+| header             | HeaderOrFooterOptions           | 否     | --                                                                            | 页眉参数                                                                       |
+| footer             | HeaderOrFooterOptions           | 否     | --                                                                            | 页脚参数                                                                       |
+| adaptive           | boolean                         | 否     | true                                                                          | 是否开启自适应，开启自适应会根据设置宽度导出 PDF                               |
+| adaptiveOptions    | AdaptiveOptions                 | 否     | --                                                                            | 自适应导出 PDF 配置                                                            |
+| jsPDFOptions       | jsPDFOptions                    | 否     | { unit: "px", format: "a4" }                                                  | jsPDF 插件配置，单位仅支持 px                                                  |
+| html2CanvasOptions | html2CanvasOptions              | 否     | { scale: PdfOptions.scale ,logging: false,useCORS: true,width: element.width} | html2canvas 插件配置                                                           |
 
 ### HeaderOrFooterOptions
 
@@ -107,49 +107,49 @@ function exportPDF() {
 
 > 为了方便扩展基础功能，PDF 生成增加了插件机制。插件有 beforeDraw、draw、afterDraw 三个钩子，通过钩子可以增加 PDF 页面，或者在 PDF 页面中增加自定义内容（页眉页脚）。本工具内置了页眉页脚插件，并开放了封面、封底插件，用于用户参考使用。若是有目录或水印需求，可通过插件实现。
 
-| 方法       | 类型                                                                                                                         | 说明                                             |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| beforeDraw | (app: HtmlToPdfClass,singlePageOptions: SinglePageOptions, pluginOptions?: T ) => Promise \| void                            | PDF 绘制前的钩子，可用于封面的绘制               |
-| draw       | (app: HtmlToPdfClass,ctx: CanvasRenderingContext2D,singlePageOptions:SinglePageOptions,pluginOptions?: T) => Promise \| void | PDF 单页面绘制的钩子，可用于绘制水印等自定义内容 |
-| afterDraw  | (app: HtmlToPdfClass,singlePageOptions: SinglePageOptions,pluginOptions?: T) => Promise \| void                              | PDF 绘制后的钩子，可用于绘制封底                 |
+| 方法       | 类型     | 说明                                             |
+| ---------- | -------- | ------------------------------------------------ |
+| beforeDraw | Function | PDF 绘制前的钩子，可用于封面的绘制               |
+| draw       | Function | PDF 单页面绘制的钩子，可用于绘制水印等自定义内容 |
+| afterDraw  | Function | PDF 绘制后的钩子，可用于绘制封底                 |
 
 ### SinglePageOptions
 
-| 参数          | 类型       | 必填项                            | 默认 | 说明                                   |
-| ------------- | ---------- | --------------------------------- | ---- | -------------------------------------- |
-| pageMargin    | PageMargin | 是                                | --   | PDF 绘制的边距(上下左右)               |
-| widthRatio    | number     | 是                                | --   | 绘制的 canvas 与 pdf 尺寸 - 转化宽度比 |
-| y             | number     | 是                                | --   | 绘制 canvase 的 y 轴坐标               |
-| canvasWidth   | number     | 是                                | --   | 单页 canvas 的宽度                     |
-| canvasHeight  | number     | 是                                | --   | 单页 canvas 的高度                     |
-| contentWidth  | number     | 是 ｜单页内容的宽度，去除左右边距 |
-| contentHeight | number     | 是 ｜单页内容的高度，去除上下边距 |
-| page          | number     | 是 ｜当前页码                     |
-| totalPage     | number     | 是 ｜总页码                       |
+| 参数          | 类型       | 必填项 | 默认 | 说明                                   |
+| ------------- | ---------- | ------ | ---- | -------------------------------------- |
+| pageMargin    | PageMargin | 是     | --   | PDF 绘制的边距(上下左右)               |
+| widthRatio    | number     | 是     | --   | 绘制的 canvas 与 pdf 尺寸 - 转化宽度比 |
+| y             | number     | 是     | --   | 绘制 canvase 的 y 轴坐标               |
+| canvasWidth   | number     | 是     | --   | 单页 canvas 的宽度                     |
+| canvasHeight  | number     | 是     | --   | 单页 canvas 的高度                     |
+| contentWidth  | number     | 是     | --   | 单页内容的宽度，去除左右边距           |
+| contentHeight | number     | 是     | --   | 单页内容的高度，去除上下边距           |
+| page          | number     | 是     | --   | 当前页码                               |
+| totalPage     | number     | 是     | --   | 总页码                                 |
 
 ## 封面/底插件
 
 ### CoverPluginOptions
 
-| 参数      | 类型         | 必填项         | 默认 | 说明 |
-| --------- | ------------ | -------------- | ---- | ---- |
-| cover     | CoverOptions | 否 ｜封面参数  |
-| backcover | CoverOptions | 否 ｜ 封底参数 |
+| 参数      | 类型         | 必填项 | 默认 | 说明     |
+| --------- | ------------ | ------ | ---- | -------- |
+| cover     | CoverOptions | 否     | --   | 封面参数 |
+| backcover | CoverOptions | 否     | --   | 封底参数 |
 
 ### CoverOptions
 
-| 参数            | 类型                                     | 必填项 | 默认             | 说明                           |
-| --------------- | ---------------------------------------- | ------ | ---------------- | ------------------------------ |
-| backgroundColor | string                                   | 否     | #fff ｜ 背景颜色 |
-| image           | string                                   | 否     | --               | 背景图片                       |
-| fit             | "fill" \| "contain" \| "cover" \| "none" | 否     | --               | 图片填充方式                   |
-| text            | string                                   | 否     | --               | 封面/底 文案内容               |
-| fontSize        | number                                   | 否     | 32               | 文案字体大小                   |
-| fontWeight      | string \| number                         | 否     | 'bold'           | 文案字体粗细                   |
-| fontFamily      | string                                   | 否     | "微软雅黑"       | 文案字体                       |
-| color           | string                                   | 否     | --               | 文案颜色                       |
-| element         | HTMLElement                              | 否     | --               | 封面/底 DOM 元素，将转化成图片 |
-| elementFit      | "fill" \| "contain" \| "cover" \| "none" | 否     | --               | 封面/底 DOM 元素填充方式       |
+| 参数            | 类型                                     | 必填项 | 默认       | 说明                           |
+| --------------- | ---------------------------------------- | ------ | ---------- | ------------------------------ |
+| backgroundColor | string                                   | 否     | #fff       | 背景颜色                       |
+| image           | string                                   | 否     | --         | 背景图片                       |
+| fit             | "fill" \| "contain" \| "cover" \| "none" | 否     | --         | 图片填充方式                   |
+| text            | string                                   | 否     | --         | 封面/底 文案内容               |
+| fontSize        | number                                   | 否     | 32         | 文案字体大小                   |
+| fontWeight      | string \| number                         | 否     | 'bold'     | 文案字体粗细                   |
+| fontFamily      | string                                   | 否     | "微软雅黑" | 文案字体                       |
+| color           | string                                   | 否     | --         | 文案颜色                       |
+| element         | HTMLElement                              | 否     | --         | 封面/底 DOM 元素，将转化成图片 |
+| elementFit      | "fill" \| "contain" \| "cover" \| "none" | 否     | --         | 封面/底 DOM 元素填充方式       |
 
 ## License
 
