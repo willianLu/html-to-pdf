@@ -1,6 +1,6 @@
 {
   "name": "@wk-tools/html-to-pdf",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "将html转化成pdf，不会对文本图片等内容进行截断。",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup",
+    "build": "tsup --env.NODE_ENV production",
     "prepublishOnly": "npm run build",
     "prepare": "husky install"
   },
@@ -48,7 +48,7 @@
   "bugs": {
     "url": "https://github.com/willianLu/html-to-pdf/issues"
   },
-  "homepage": "https://github.com/willianLu/html-to-pdf#readme",
+  "homepage": "https://willianlu.github.io/html-pdf-docs/#/demo",
   "devDependencies": {
     "@types/node": "^18.11.8",
     "@typescript-eslint/eslint-plugin": "^5.30.7",

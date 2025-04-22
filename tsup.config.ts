@@ -1,13 +1,18 @@
 import { defineConfig } from "tsup";
 
-export default defineConfig({
-  entry: ["src/index.ts"],
-  format: ["cjs", "esm"],
-  minify: false,
-  dts: true,
-  splitting: false,
-  clean: true,
-  esbuildOptions(options) {
-    options.drop = ["console", "debugger"];
-  },
+export default defineConfig((options) => {
+  const isProd = options.env?.NODE_ENV === "production";
+  return {
+    entry: ["src/index.ts"],
+    format: ["cjs", "esm"],
+    minify: true,
+    dts: true,
+    splitting: false,
+    clean: true,
+    esbuildOptions(esbuildOptions) {
+      if (isProd) {
+        esbuildOptions.drop = ["console", "debugger"];
+      }
+    },
+  };
 });
