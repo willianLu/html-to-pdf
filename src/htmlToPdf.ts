@@ -198,6 +198,17 @@ export default class HtmlToPdf implements HtmlToPdfClass {
           monoblockClassName = options.monoblockClassName;
         }
       }
+
+      // 初始化pageBreakClassName，作为强制分页的类名
+      let pageBreakClassName: string[] = ["html-pdf-page-break"];
+      if (options.pageBreakClassName) {
+        if (!Array.isArray(options.pageBreakClassName)) {
+          pageBreakClassName = [options.pageBreakClassName];
+        } else {
+          pageBreakClassName = options.pageBreakClassName;
+        }
+      }
+
       const { pdfWidth, pdfHeight } = this;
       // PDF 去除预留边界，单一页面的真实高度
       const realPageHeight = pdfHeight - margin.top - margin.bottom;
@@ -274,6 +285,18 @@ export default class HtmlToPdf implements HtmlToPdfClass {
           // 该元素到上次计算到的位置的距离
           const top = wTop - distance;
           pageLong += top;
+
+          // 检查当前元素是否具有pageClass中的类名
+          const hasPageClass = pageBreakClassName.some((className) =>
+            el.classList.contains(className)
+          );
+
+          // 如果元素具有pageClass中的类名，且前面还有内容，则先记录当前位置为分页点
+          if (hasPageClass && pageLong > 0) {
+            pages.push(distance);
+            pageLong = 0;
+          }
+
           // 计算中的页面高度超出 PDF 单页高度，则记录该节点位置
           if (pageLong !== top && pageLong > pdfPageContentHeight) {
             pages.push(distance);
@@ -334,6 +357,12 @@ export default class HtmlToPdf implements HtmlToPdfClass {
             // 未超出时，直接累加高度
             pageLong += elHeight;
             distance += elHeight;
+
+            // 如果元素具有pageClass中的类名，则处理完当前元素后强制分页
+            if (hasPageClass) {
+              pages.push(distance);
+              pageLong = 0;
+            }
           }
         }
         for (let i = 0; i < pages.length; i++) {
