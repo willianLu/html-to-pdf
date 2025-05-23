@@ -52,6 +52,8 @@ export interface PdfOptions {
   name?: string;
   // 整体块的class名称，生成pdf时作为整体处理，不会被分页切割
   monoblockClassName?: string | string[];
+  // 分页的class名称，将该元素当成一整页pdf处理
+  pageBreakClassName?: string | string[];
   // PDF背景色
   backgroundColor?: string;
   // 放大倍数，默认2倍，使导出的pdf更加清晰

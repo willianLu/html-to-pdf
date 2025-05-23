@@ -69,6 +69,7 @@ function exportPDF() {
 | ------------------ | ------------------------------- | ------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | name               | string                          | 否     | --                                                                            | 导出文件名称                                                                   |
 | monoblockClassName | string \| string[]              | 否     | 'html-pdf-monoblock'                                                          | 分页处理时，将元素内容当作一个整体                                             |
+| pageBreakClassName | string \| string[]              | 否     | 'html-pdf-page-break'                                                         | 分页的class名称，将该元素当成一整页pdf处理                                          |
 | backgroundColor    | string                          | 否     | #fff                                                                          | PDF 背景颜色                                                                   |
 | scale              | number                          | 否     | 2                                                                             | 导出内容放大倍数，增加内容清晰度，必须大于 0                                   |
 | margin             | number \| number[]              | 否     | 10                                                                            | PDF 内容边距                                                                   |
